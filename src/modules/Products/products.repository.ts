@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { updateProductDTO } from "src/dto/userDto/updateProductDTO";
 import { IProducts, productsArray } from "src/mocks/products";
 
 @Injectable()
@@ -7,4 +8,34 @@ export class ProductsRepository{
         const products:IProducts[] = await productsArray;
         return products;
     }
+
+    async createProduct(product:IProducts){
+        const products = await productsArray.push(product);
+        return product;
+    }
+
+    async updateProduct( id:number,prod:updateProductDTO){
+        const prodOriginal = await productsArray.find(produ=>produ.id===id)
+
+        if(prodOriginal){
+            Object.keys(prod).forEach(key=>{
+                prodOriginal[key]= prod[key]
+            })
+        }
+
+        return prodOriginal;
+    }
+
+    async findOneProduct(id:number){
+        const product = await productsArray.find(prod=>prod.id=== id);
+        return product;
+    }
+
+    async deleteProduct(id:number){
+        const productIndex = await productsArray.findIndex(prod=>prod.id === id)
+        productsArray.splice(productIndex,1)
+       return productsArray;
+    }
+
+
 };
