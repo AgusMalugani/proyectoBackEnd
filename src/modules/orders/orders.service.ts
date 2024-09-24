@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +27,10 @@ constructor(
 
   async addOrder(createOrderDto: CreateOrderDto) {
     const{idUser,products} = createOrderDto;
-    const user = await this.usersService.getOneUserService(idUser);    
+    const user = await this.usersService.getOneUserService(idUser);   
+    if(!user){
+      throw new HttpException({status:400,error:"usuario no encontrado"},HttpStatus.BAD_REQUEST);
+    } 
 
     const orderEntity = await this.orderRepository.save( 
       await this.orderRepository.create({

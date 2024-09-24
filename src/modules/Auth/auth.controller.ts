@@ -1,26 +1,23 @@
-import { Body, Controller, Get, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Res } from "@nestjs/common";
 import {  Response } from "express";
-import { loginCredentialsDTO } from "src/dto/userDto/loginCredentialsDTO";
 import { AuthService } from "./auth.service";
+import { LoginUserDTO } from "./dto/loginUserDTO";
 
 
 @Controller("/auth")
 export class AuthController{
     constructor(private readonly authService:AuthService){}
 
-@Get()
-getAllAuth():string{
-return this.authService.getAllAuth();
-}
+
 
 @Post("signin")
-async login(@Body() credentials:loginCredentialsDTO, @Res() res:Response ){
+async login(@Body() credentials:LoginUserDTO, @Res() res:Response ){
   
 const usuario = await this.authService.getAuth(credentials);
 if(usuario){
 res.status(200).json(usuario);
 } else{
-    res.status(400).json({message:"Email o contraseña incorrecta"});
+throw new HttpException({status:400, error:"Credenciales incorrectas"},HttpStatus.BAD_REQUEST)
 }
 }
 

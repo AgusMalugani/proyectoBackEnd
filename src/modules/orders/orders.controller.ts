@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { error } from 'console';
 
 
 @Controller('orders')
@@ -9,7 +10,11 @@ export class OrdersController {
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.addOrder(createOrderDto);
+    try {
+      return this.ordersService.addOrder(createOrderDto);
+    } catch (e) {
+      throw new HttpException({status:400,error:e.message},HttpStatus.BAD_REQUEST)
+    }
   }
 
   @Get()
@@ -18,17 +23,17 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id',ParseUUIDPipe) id: string) {
     return this.ordersService.findOne(id);
   }
 
-  //@Patch(':id')
+  //@Patch(':id',ParseUUIDPipe)
   //update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
    // return this.ordersService.update(+id, updateOrderDto);
  // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id',ParseUUIDPipe) id: string) {
     return this.ordersService.remove(+id);
   }
 }

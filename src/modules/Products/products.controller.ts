@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { IProducts } from "src/mocks/products";
 import { Response } from "express";
@@ -27,21 +27,35 @@ async createProduct(@Body() product :Product , @Res() res : Response){
 
 
 @Put("update/:id")
-async updateProduct(@Param("id") id:string, @Body() product:updateProductDTO  ,@Res() res : Response ){
-    const prod = await this.productsService.updateProductService(id,product);
-    res.status(200).json(prod);
+async updateProduct(@Param("id",ParseUUIDPipe) id:string, @Body() product:updateProductDTO  ,@Res() res : Response ){
+    
+        const prod = await this.productsService.updateProductService(id,product);
+        res.status(200).json(prod);
+    if(!prod){
+        throw new HttpException({status:400,error:"no se encuentra ese producto"},HttpStatus.BAD_REQUEST);
+    }
+    
 }
 
 @Get(":id")
-async getOneProduct(@Param("id") id:string, @Res() res : Response ){
+async getOneProduct(@Param("id",ParseUUIDPipe) id:string, @Res() res : Response ){
  const producto = await this.productsService.getOneProductService(id);
  res.status(200).json(producto);
+ if(!producto){
+    throw new HttpException({status:400,error:"no se encuentra ese producto"},HttpStatus.BAD_REQUEST);
+}
+
 }
 
 @Delete("delete/:id")
-async deleteProduct(@Param("id") id:string,@Res() res : Response ){
-const products = await this.productsService.deleteProductService(id);
-res.status(200).json(products);
+async deleteProduct(@Param("id",ParseUUIDPipe) id:string,@Res() res : Response ){
+    try{
+        const products = await this.productsService.deleteProductService(id);
+        res.status(200).json(products);
+    }catch(e){
+        throw new HttpException({status:400,error:"no se encuentra ese producto", errorMsj:e.message},HttpStatus.BAD_REQUEST);
+    }
+
 }
 
 
