@@ -10,6 +10,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { OrderDetailsModule } from './modules/order-details/order-details.module';
 import { SeederModule } from './modules/seeder/seeder.module';
+import { CloudinaryService } from './service/cloudinary/cloudinary.service';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import TypeOrmConfig from "./config/dataSource"
 @Module({
   imports: [ConfigModule.forRoot({
@@ -21,11 +23,11 @@ import TypeOrmConfig from "./config/dataSource"
       useFactory:(configService:ConfigService) => configService.get("dataSource"),
      }),
      
-  UsersModule,ProductsModule,AuthModule, CategoriesModule, OrdersModule, OrderDetailsModule, SeederModule],
+  UsersModule,ProductsModule,AuthModule, CategoriesModule, OrdersModule, OrderDetailsModule, SeederModule, FileUploadModule],
   controllers: [],
   providers: [{
     provide:APP_GUARD,
     useClass:AuthGuard
-  }],
+  }, CloudinaryService],
 })
 export class AppModule {}
