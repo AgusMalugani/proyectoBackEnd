@@ -48,4 +48,10 @@ async deleteUserService(id:string){
 return users;
 }
 
+async getOneUserByEmail(email:string){
+    const user = await this.usersRepository.findOneBy({email})
+    
+    return user;
+}
+
 }

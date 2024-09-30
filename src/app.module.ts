@@ -13,6 +13,7 @@ import { SeederModule } from './modules/seeder/seeder.module';
 import { CloudinaryService } from './service/cloudinary/cloudinary.service';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import TypeOrmConfig from "./config/dataSource"
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal:true,
@@ -23,11 +24,18 @@ import TypeOrmConfig from "./config/dataSource"
       useFactory:(configService:ConfigService) => configService.get("dataSource"),
      }),
      
-  UsersModule,ProductsModule,AuthModule, CategoriesModule, OrdersModule, OrderDetailsModule, SeederModule, FileUploadModule],
+  UsersModule,ProductsModule,AuthModule, CategoriesModule, OrdersModule, OrderDetailsModule, SeederModule, FileUploadModule,
+JwtModule.register({
+  global:true,
+  secret:"claveSecreta",
+  signOptions:{expiresIn:"60m"}
+})
+],
   controllers: [],
-  providers: [{
-    provide:APP_GUARD,
-    useClass:AuthGuard
-  }, CloudinaryService],
+  providers: [//{
+    //provide:APP_GUARD,
+    //useClass:AuthGuard
+  //},
+   CloudinaryService],
 })
 export class AppModule {}

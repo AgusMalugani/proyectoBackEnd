@@ -14,7 +14,7 @@ synchronize:true,
 autoLoadEntities:true,
 entities:["dist/**/*.entity{.ts,.js}"],
 migrations:["dist/migrations/*{.js,.ts}"],
-dropSchema:true,
+//dropSchema:true,
 logging:true
 }
 

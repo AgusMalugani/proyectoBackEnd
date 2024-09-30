@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { IUser } from "src/mocks/users";
 import { updateUserDTO } from "src/dto/userDto/updateUserDTO";
 import { Response } from "express";
 import { User } from "./user.entity";
 import { CreateUserDTO } from "./dto/create-user.dto";
+import { AuthGuard } from "src/guards/auth.guard";
 
 @Controller("/users")
 
@@ -12,6 +13,7 @@ export class UsersController{
     constructor(private readonly usersService : UsersService){}
 
 @Get()
+@UseGuards(AuthGuard)
 async getAllUsers(@Res() res : Response, @Query("page") page:number,@Query("limit") limit:number){
     const paginaActual = page ? page : 1;
     const limiteActual = limit ? limit : 5 ;
@@ -29,6 +31,7 @@ async createUser(@Body() user : CreateUserDTO, @Res() res : Response){
     }
 
 @Put("update/:id")
+@UseGuards(AuthGuard)
 async updateUser(@Param("id",ParseUUIDPipe) id:string, @Body() user :updateUserDTO,@Res() res : Response ){
     const userMod= await this.usersService.updateUserService(Number(id),user);
     res.status(200).json({
@@ -38,6 +41,7 @@ async updateUser(@Param("id",ParseUUIDPipe) id:string, @Body() user :updateUserD
 }
 
 @Get(":id")
+@UseGuards(AuthGuard)
 async getOneUser(@Param("id",ParseUUIDPipe) id:string, @Res() res : Response ){
     const user= await this.usersService.getOneUserService(id);
     res.status(200).json(user);
@@ -47,6 +51,7 @@ async getOneUser(@Param("id",ParseUUIDPipe) id:string, @Res() res : Response ){
 }
 
 @Delete("delete/:id")
+@UseGuards(AuthGuard)
 async deleteUser(@Param("id",ParseUUIDPipe) id:string,@Res() res : Response ){
     try{
         const users = await this.usersService.deleteUserService(id);

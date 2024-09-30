@@ -12,7 +12,7 @@ export class ProductsController{
 constructor(private readonly productsService : ProductsService ){}
 
 @Get()
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 async getAllProducts(@Res() res : Response){
     const products = await this.productsService.getAllProductsService();
     res.status(200).json(products);
@@ -38,6 +38,7 @@ async updateProduct(@Param("id",ParseUUIDPipe) id:string, @Body() product:update
 }
 
 @Get(":id")
+@UseGuards(AuthGuard)
 async getOneProduct(@Param("id",ParseUUIDPipe) id:string, @Res() res : Response ){
  const producto = await this.productsService.getOneProductService(id);
  res.status(200).json(producto);

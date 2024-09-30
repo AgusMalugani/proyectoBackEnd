@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { error } from 'console';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 
 @Controller('orders')
@@ -9,6 +10,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   create(@Body() createOrderDto: CreateOrderDto) {
     try {
       return this.ordersService.addOrder(createOrderDto);
@@ -23,6 +25,7 @@ export class OrdersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id',ParseUUIDPipe) id: string) {
     return this.ordersService.findOne(id);
   }
