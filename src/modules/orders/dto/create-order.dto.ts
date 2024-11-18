@@ -1,5 +1,5 @@
 import { ArrayMinSize, IsArray, IsNotEmpty, IsUUID } from "class-validator"
-import { Product } from "src/modules/Products/product.entity"
+import { Product } from "src/modules/Products/entities/product.entity"
 
 export class CreateOrderDto {
     @IsUUID('4', { message: 'El userId debe ser un UUID v4 válido.' })

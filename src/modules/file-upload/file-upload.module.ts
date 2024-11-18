@@ -6,7 +6,7 @@ import { ProductsService } from '../Products/products.service';
 import { ProductsModule } from '../Products/products.module';
 
 @Module({
-  imports:[ProductsModule],
+  imports:[],
   controllers: [FileUploadController],
   providers: [FileUploadService,CloudinaryService],
   exports:[FileUploadService]

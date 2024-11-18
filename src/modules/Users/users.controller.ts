@@ -1,57 +1,59 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { IUser } from "src/mocks/users";
-import { updateUserDTO } from "src/dto/userDto/updateUserDTO";
+import { UpdateUserDto } from "./dto/update-user.dto"; 
 import { Response } from "express";
-import { User } from "./user.entity";
+import { User } from "./entities/user.entity"; 
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { AuthGuard } from "src/guards/auth.guard";
-
+import { RolesGuard } from "src/guards/roles.guard";
+import { Roles } from "src/decorators/roles.decorators";
+import { Role } from "src/enum/role.enum";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+@ApiTags("Users")
 @Controller("/users")
 
 export class UsersController{
     constructor(private readonly usersService : UsersService){}
 
 @Get()
-@UseGuards(AuthGuard)
-async getAllUsers(@Res() res : Response, @Query("page") page:number,@Query("limit") limit:number){
+@Roles(Role.User)
+@UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
+@HttpCode(200)
+async getAllUsers(@Query("page") page:number,@Query("limit") limit:number){
     const paginaActual = page ? page : 1;
     const limiteActual = limit ? limit : 5 ;
     const users= await this.usersService.getAllUsersService(paginaActual,limiteActual);
-    res.status(200).json(users);
-    if(!users){
-        throw new HttpException({status:400,error:"no hay usuarios que mostrar"},HttpStatus.BAD_REQUEST)
-    }
+    return {data: users}
 }
 
+@HttpCode(201)
 @Post("create")
-async createUser(@Body() user : CreateUserDTO, @Res() res : Response){
+async createUser(@Body() user : CreateUserDTO){
     const usuario = await this.usersService.createUserService(user);
-    res.status(201).json(usuario)
+    return {data: usuario};
     }
 
 @Put("update/:id")
 @UseGuards(AuthGuard)
-async updateUser(@Param("id",ParseUUIDPipe) id:string, @Body() user :updateUserDTO,@Res() res : Response ){
-    const userMod= await this.usersService.updateUserService(Number(id),user);
-    res.status(200).json({
-    mesagge:"Usuario modificado",
-    data: userMod
-    })
+@HttpCode(200)
+async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto,@Res() res : Response ){
+    const userMod= await this.usersService.updateUserService(Number(id),updateUserDto);
+  return userMod;
 }
 
 @Get(":id")
 @UseGuards(AuthGuard)
-async getOneUser(@Param("id",ParseUUIDPipe) id:string, @Res() res : Response ){
+@HttpCode(200)
+async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
     const user= await this.usersService.getOneUserService(id);
-    res.status(200).json(user);
-    if(!user){
-        throw new HttpException({status:400,error:"no hay usuarios con ese id"},HttpStatus.BAD_REQUEST)
-    }
+   return {data:user}
 }
 
 @Delete("delete/:id")
 @UseGuards(AuthGuard)
+@HttpCode(200)
 async deleteUser(@Param("id",ParseUUIDPipe) id:string,@Res() res : Response ){
     try{
         const users = await this.usersService.deleteUserService(id);

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { updateProductDTO } from "src/dto/userDto/updateProductDTO";
 import { IProducts, productsArray } from "src/mocks/products";
+import { UpdateProductDto } from "./dto/update-product.dto"; 
 
 @Injectable()
 export class ProductsRepository{
@@ -14,7 +14,7 @@ export class ProductsRepository{
         return product;
     }
 
-    async updateProduct( id:number,prod:updateProductDTO){
+    async updateProduct( id:number,prod:UpdateProductDto){
         const prodOriginal = await productsArray.find(produ=>produ.id===id)
 
         if(prodOriginal){

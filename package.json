@@ -32,6 +32,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.4.2",
     "@nestjs/typeorm": "^10.0.2",
     "@types/multer": "^1.4.12",
     "bcrypt": "^5.1.1",
@@ -84,6 +85,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)": "<rootDir>/$1",
+      "tests/(.*)": "<rootDir>/__tests__/$1"
+    }
   }
 }

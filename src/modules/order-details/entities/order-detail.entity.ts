@@ -1,5 +1,5 @@
-import { Order } from "src/modules/orders/order.entity";
-import { Product } from "src/modules/Products/product.entity";
+import { Order } from "src/modules/orders/entities/order.entity";
+import { Product } from "src/modules/Products/entities/product.entity"; 
 import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import {v4 as uuid} from "uuid"
 

@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { UsersRepository } from "./users.repository";
 import { IUser, usersArray } from "src/mocks/users";
-import { updateUserDTO } from "src/dto/userDto/updateUserDTO";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./user.entity";
-import { Repository } from "typeorm";
+import { UpdateUserDto } from "./dto/update-user.dto"; 
+import { User } from "./entities/user.entity"; 
 import { CreateUserDTO } from "./dto/create-user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { ResponseUserDto } from "./dto/response-user.dto";
 
 @Injectable()
 export class UsersService{
@@ -25,13 +25,13 @@ export class UsersService{
     }
     }
 
-   async createUserService( user:CreateUserDTO){
-       const users = await this.usersRepository.create(user);
-       await this.usersRepository.save(users);
-    return users;
+   async createUserService( createUserDto: CreateUserDTO){
+    const newUser= await this.usersRepository.save( this.usersRepository.create(createUserDto) );
+    const responseUser = new ResponseUserDto(newUser);
+   return responseUser
     }
 
-async updateUserService(id :number,user:updateUserDTO){
+async updateUserService(id :number,user:UpdateUserDto){
 //const userMod = await this.usersRepository.update(id,user);
 //return userMod;
 
@@ -39,8 +39,8 @@ async updateUserService(id :number,user:updateUserDTO){
 
 
 async getOneUserService(id:string){
-const user = await this.usersRepository.findOneBy({id});
-return user;
+    return await this.usersRepository.findOne({where: {id},relations:{orders:true}});
+ 
 }
 
 async deleteUserService(id:string){
@@ -48,10 +48,9 @@ async deleteUserService(id:string){
 return users;
 }
 
-async getOneUserByEmail(email:string){
-    const user = await this.usersRepository.findOneBy({email})
-    
-    return user;
+async getOneUserByEmail(email:string):Promise<User | undefined>{
+    return await this.usersRepository.findOne({where:{email}});
+ 
 }
 
 }

@@ -1,15 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { ProductsRepository } from "./products.repository";
 import { IProducts, productsArray } from "src/mocks/products";
-import { updateProductDTO } from "src/dto/userDto/updateProductDTO";
+import { UpdateProductDto } from "./dto/update-product.dto"; 
 import { Repository } from "typeorm";
-import { Product } from "./product.entity";
+import { Product } from "./entities/product.entity"; 
 import { InjectRepository } from "@nestjs/typeorm";
+import { FileUploadService } from "../file-upload/file-upload.service";
+import { CreateProductDto } from "./dto/create-product.dto";
+import { FileUploadDTO } from "../file-upload/dto/file-upload.dto";
 
 
 @Injectable()
 export class ProductsService {
-    constructor(@InjectRepository(Product) private productsRepository: Repository<Product>) { }
+    
+    constructor(@InjectRepository(Product) private productsRepository: Repository<Product>,
+    private readonly fileUploadService : FileUploadService) { }
 
     async getAllProductsService() {
         const products = await this.productsRepository.find({relations:{category:true,orderDetails:true}});
@@ -18,20 +23,28 @@ export class ProductsService {
         }
     }
 
-    async createProductService(product: Product) {
+    async createProductService(product: CreateProductDto) {
 
-        const producto = await this.productsRepository.create(product);
-        await this.productsRepository.save(producto);
-        return producto;
+        const producto =  this.productsRepository.create(product);
+        
+        return await this.productsRepository.save(producto);;
     }
 
-    async updateProductService(id: string, prod: updateProductDTO) {
-        const productMod = await this.productsRepository.update(id, prod);
-        return productMod;
+    async updateProductService(id: string, updateProductDto: UpdateProductDto) {
+        const product = await this.productsRepository.findOne({where:{id}});
+    if (!product) {
+      throw new NotFoundException("No se encontraron productos con la id ingresada");
+    }
+
+    for (const key in updateProductDto) {
+      product[key] = updateProductDto[key]
+    }
+
+    return await this.productsRepository.save(product);
     }
 
     async getOneProductService(id: string) {
-        const prod = await this.productsRepository.findOneBy({ id });
+        const prod = await this.productsRepository.findOne({where:{id}})
         return prod;
     }
     async deleteProductService(id: string) {
@@ -40,16 +53,23 @@ export class ProductsService {
     }
 
     async buyProductService(id: string) {
-        const producto = await this.getOneProductService(id);
-        if (producto.stock > 0) {
-            console.log(producto.stock);
-            //stock antes de restar
-            await this.updateProductService(id, { stock: (producto.stock - 1) })
-            //tengo que verificar si realmente se modifica el stock
-            return producto.price;
+        let precio = 0 ;
+        const product = await this.getOneProductService(id);
+        if(product.stock > 0){
+          precio = product.price;
+          product.stock = product.stock-1
+          this.productsRepository.save(product);
+          return precio;
         }
-        return
     }
 
+    async uploadFile(file: FileUploadDTO, id:string){
+        const url = await this.fileUploadService.uploadFile(file,id)
+      
+      const productMod = await this.updateProductService(id,{imgUrl:url})
+    
+      return productMod;
+    
+      }
 
 }

@@ -5,18 +5,14 @@ import { ProductsService } from '../Products/products.service';
 
 @Injectable()
 export class FileUploadService {
-constructor(private readonly cloudinaryService: CloudinaryService,
-    private readonly productsService:ProductsService ){}
+constructor(private readonly cloudinaryService: CloudinaryService){}
 
-async uploadFile( file:FileUploadDTO, id :string ){
-const url = await this.cloudinaryService.uploadFile(file.buffer,file.originalName);
-await this.productsService.updateProductService(id,{imgUrl:url})
-return url;
-}
+    async uploadFile( file:FileUploadDTO, id :string ){
+        const url = await this.cloudinaryService.uploadFile(file.buffer,file.originalName);
+        return url;
+        }
 
-async getUrl(publicId:string){
-    return this.cloudinaryService.getUrl(publicId);
-}
-
-
+        async getUrl(publicId:string){
+            return this.cloudinaryService.getUrl(publicId);
+        }
 }

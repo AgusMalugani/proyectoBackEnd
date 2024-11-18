@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './modules/Users/users.module';
+import { UsersModule } from './modules/Users/users.module'; 
 import { ProductsModule } from './modules/Products/products.module';
 import { AuthModule } from './modules/Auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
@@ -14,28 +14,42 @@ import { CloudinaryService } from './service/cloudinary/cloudinary.service';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import TypeOrmConfig from "./config/dataSource"
 import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './modules/Auth/auth.service';
+import { UsersService } from './modules/Users/users.service';
+import { AuthController } from './modules/Auth/auth.controller';
+import { User } from './modules/Users/entities/user.entity'; 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal:true,
     load:[TypeOrmConfig]
   }),
+  TypeOrmModule.forFeature([User]),
     TypeOrmModule.forRootAsync({
       inject:[ConfigService],
       useFactory:(configService:ConfigService) => configService.get("dataSource"),
      }),
      
-  UsersModule,ProductsModule,AuthModule, CategoriesModule, OrdersModule, OrderDetailsModule, SeederModule, FileUploadModule,
+  UsersModule,
+  ProductsModule,
+  AuthModule,
+   CategoriesModule, 
+   OrdersModule,
+    OrderDetailsModule,
+     SeederModule,
+      FileUploadModule,
 JwtModule.register({
   global:true,
-  secret:"claveSecreta",
+  secret:process.env.JWT_SECRET,
   signOptions:{expiresIn:"60m"}
 })
 ],
-  controllers: [],
+  controllers: [AuthController],
   providers: [//{
     //provide:APP_GUARD,
     //useClass:AuthGuard
   //},
-   CloudinaryService],
+   CloudinaryService,
+    AuthService,
+     UsersService],
 })
 export class AppModule {}
