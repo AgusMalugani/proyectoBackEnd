@@ -25,7 +25,7 @@ async singUp(@Body() user : CreateUserDTO){
 
 @Post("signin")
 @HttpCode(200)
-async login(@Body() credentials:SignInDto, ){
+async login(@Body() credentials:SignInDto ){
   const token =  await this.authService.signInUser(credentials);
   
 return {success: "usuario encontrado" , token : token}

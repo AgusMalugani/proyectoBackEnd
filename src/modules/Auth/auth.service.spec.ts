@@ -1,93 +1,102 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UsersService } from '../Users/users.service';
-import { User } from '../Users/entities/user.entity'; 
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../Users/users.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../Users/entities/user.entity';
 import { CreateUserDTO } from '../Users/dto/create-user.dto';
-import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken"
+import { SignInDto } from './dto/sign-in-dto';
 
-/*
 describe('AuthService', () => {
   let service: AuthService;
   let mockUsersService : Partial<UsersService>;
+  const mockUser = new CreateUserDTO ({
+    email:"agusmalugani@mail.com",
+    password:"12345678",
+    repeatPassword:"12345678",
+    name:"agustin",
+    country:"arg",
+    city:"ros",
+    address:"ituzaingo",
+    phone:"34133333"
+  } )
+
+  const credentials = new SignInDto({
+  email: mockUser.email,
+  password:mockUser.password
+  })
 
   beforeEach(async () => {
-    mockUsersService={
+
+     mockUsersService={
       getOneUserByEmail : ()=> Promise.resolve(undefined),
-      createUserService: (user : Partial<User>)=> Promise.resolve( {
-        ...user,
-        isAdmin:true,
-        id:"1234fs-1234fs-1234fs-1234fs"
-      } as User )
+      createUserService: (createUser: CreateUserDTO)=>{
+       const user = {
+          ...createUser,
+          id : "0811e11d-e25b-486d-bc30-12faf7b75586",
+          isAdmin : false,
+          orders:[]
+        } as User;
+        return Promise.resolve(user);
+      }
     }
-    
-  const mockJwtService = {
-    sign: (payload)=> jwt.sign(payload,"testSecret")
-  }
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService,{provide:getRepositoryToken(User),useValue:{}},
-        {provide:JwtService, useValue:mockJwtService},
-        {provide:UsersService, useValue:mockUsersService}
-      ],
+      providers: [AuthService,
+        {provide:getRepositoryToken(User),useValue:{}},
+        {provide:JwtService, useValue:{}},
+        {provide:UsersService, useValue:mockUsersService}],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
   });
 
 
-  const mockUser= new SignUpDto({
-    name:"John doe",
-    email:"johndoe@email.com",
-    password:"123456",
-    confirmPassword:"123456"
-  })
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it("signUp() creacion de usuario con contraseña encriptada",async ()=>{
-    const user = await service.signUpUser(mockUser);
-   // console.log(user);
-    expect(user).toHaveProperty("id");
-    expect(user).toHaveProperty("isAdmin",true)
-    expect(user).toHaveProperty("password");
+
+
+  it("signUp debe retornar un usuario con el password hasheado", async ()=>{
+const user = await service.signUpUser(mockUser);
+expect(user).toHaveProperty("id");
+expect(user).toHaveProperty("password");
+  });
+
+
+
+  it("signUp() debe retornar error si el email ya existe", async ()=>{
+    mockUsersService.getOneUserByEmail = (email:string)=>
+      Promise.resolve(mockUser as User)
+
+try {
+  await service.signUpUser(mockUser as User);
+} catch (error) {
+  expect(error.message).toEqual("Ya existe un usuario con ese email");
+}
   })
 
 
-  it("singIn() tire error si el usuario no existe" ,async ()=>{
-try {
- const user = await service.signInUser(mockUser)
- 
-} catch (error) {
-  expect(error.message).toEqual("Usuario incorrecto")
-}
-
-  } )
-
-
-
-  it("singIn() ", async () =>{
-    const mockUserModificado:User = {
-      ...mockUser,
-      id:"2313",
-      orders: [],
-      isAdmin: false,
-      password :await bcrypt.hash(mockUser.password,10)
+  it("signIn() debe retornar error si el usuario no se encuentra", async ()=>{
+    try {
+      await service.signInUser(mockUser as User);
+    } catch (error) {
+      expect(error.message).toEqual("Usuario incorrecto");
     }
-     mockUsersService.getOneUserByEmail = (email : string)=> Promise.resolve(mockUserModificado as User);
+  })
+
+  it("signIn() debe retornar error si la contraseña es incorrecta", async ()=>{
+    mockUsersService.getOneUserByEmail= (email : string)=>Promise.resolve(mockUser as User);
+
+    try {
+      await service.signInUser(credentials as SignInDto);
+    } catch (error) {
+     expect(error.message).toEqual("usuario incorrecto"); 
+    }
+  })
 
 
-    const response = await service.signInUser(mockUser);
-    
-    expect(response).toBeDefined();
-    
-  
-})
-  
 
 });
-
-*/

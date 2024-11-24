@@ -4,9 +4,15 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGene
 import {v4 as uuid} from "uuid"
 @Entity()
 export class Order {
+    /** Debe contener un UUID v4 valido
+     * @example 3f5b02d7-e458-4e1a-9a9f-99d828b0b64e
+     */
     @PrimaryGeneratedColumn("uuid")
 id : string = uuid();
 
+/** Se genera automaticamente con la fecha de creacion de la orden
+     *
+     */
 @Column()
 date:Date
 

@@ -21,7 +21,7 @@ export class UsersController{
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(200)
-async getAllUsers(@Query("page") page:number,@Query("limit") limit:number){
+async getAllUsers(@Query("page") page?:number,@Query("limit") limit?:number){
     const paginaActual = page ? page : 1;
     const limiteActual = limit ? limit : 5 ;
     const users= await this.usersService.getAllUsersService(paginaActual,limiteActual);

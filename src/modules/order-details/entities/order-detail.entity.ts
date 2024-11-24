@@ -6,10 +6,18 @@ import {v4 as uuid} from "uuid"
 
 @Entity()
 export class OrderDetail {
+    /** Debe ser un UUID version 4
+     * 
+     */
     @PrimaryGeneratedColumn("uuid")
     id : string = uuid();
+    
+    /** Debe contener el precio del producto
+     * @example 10000
+     */
     @Column()
     price:number
+    
     @OneToOne(()=>Order,(order)=>order.orderDetails)
     order:Order
     @ManyToMany(()=>Product,(prod)=>prod.orderDetails)

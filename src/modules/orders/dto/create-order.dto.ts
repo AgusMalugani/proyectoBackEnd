@@ -2,10 +2,17 @@ import { ArrayMinSize, IsArray, IsNotEmpty, IsUUID } from "class-validator"
 import { Product } from "src/modules/Products/entities/product.entity"
 
 export class CreateOrderDto {
-    @IsUUID('4', { message: 'El userId debe ser un UUID v4 válido.' })
+    /** Debe contener un UUID v4 valido
+     * @example 3f5b02d7-e458-4e1a-9a9f-99d828b0b64e
+     */
+    @IsUUID('4')
     @IsNotEmpty()
     idUser:string
-    @IsArray({ message: 'products debe ser un array.' })
-    @ArrayMinSize(1, { message: 'Debe haber al menos un producto.' })
+
+    /** Debe ser un array y contener almenos un producto
+     * @example products:[{id:8f2b02d6-q548-6a1s-6w4f-77q868b5q64e}]
+     */
+    @IsArray()
+    @ArrayMinSize(1)
     products:Product[]
 }
