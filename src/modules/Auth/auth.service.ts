@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UsersService } from "../Users/users.service";
-import * as bcrypt from "bcrypt"; 
+import * as bcrypt from "bcryptjs"; 
 import { JwtService } from "@nestjs/jwt";
 import { CreateUserDTO } from "../Users/dto/create-user.dto";
 import { Role } from "src/enum/role.enum";
@@ -25,8 +25,8 @@ async signUpUser(user: CreateUserDTO){
     if(user.password !== user.repeatPassword){
       throw new BadRequestException("Las contraseñas deben coincidir");
     }
-
-const passwordHash = await bcrypt.hash(user.password,10);
+    //const passwordHash = await bcrypt.hash(user.password,10);
+    const passwordHash = bcrypt.hashSync(user.password, 10);
 
 const newUser = await this.usersService.createUserService({...user,password:passwordHash});
 
@@ -44,8 +44,8 @@ const user = await this.usersService.getOneUserByEmail(email);
 if(!user){
     throw new BadRequestException("Usuario incorrecto");
 }
-const verificacionPassword = await bcrypt.compare(password, user.password);
-
+//const verificacionPassword = await bcrypt.compare(password, user.password);
+const verificacionPassword = bcrypt.compareSync(password, user.password);
 if(verificacionPassword === false){
 throw new BadRequestException("usuario incorrecto");
 }
