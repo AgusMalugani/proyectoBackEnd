@@ -21,8 +21,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -33,8 +33,8 @@ jobs:
 
       # Desplegar en Render
       - name: Deploy to Render
-        uses: agusmalugani/render-deploy-action@v0.0.8
+        uses: agusmalugani/proyectoBackEnd
         with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{secrets.RENDER_SERVICE_ID}}
+          api-key: ${{secrets.RENDER_API_KEY}}
           wait-for-success: true
