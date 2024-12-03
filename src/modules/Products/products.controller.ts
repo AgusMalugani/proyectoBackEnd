@@ -31,7 +31,7 @@ async getAllProducts(){
 @HttpCode(201)
 async createProduct(@Body() product :Product){
   const producto = await this.productsService.createProductService(product);
-return producto;
+return {message:"Producto creado",data:producto};
     }
 
 
@@ -54,10 +54,10 @@ async getOneProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 
 @Delete("delete/:id")
 @HttpCode(200)
-async deleteProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,@Res() res : Response ){
+async deleteProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string){
     try{
         const products = await this.productsService.deleteProductService(id);
-        res.status(200).json(products);
+        return {message: "Producto eliminado", data: products};
     }catch(e){
         throw new HttpException({status:400,error:"no se encuentra ese producto", errorMsj:e.message},HttpStatus.BAD_REQUEST);
     }

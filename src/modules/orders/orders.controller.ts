@@ -36,14 +36,4 @@ export class OrdersController {
   }
   
 
-  //@Patch(':id',ParseUUIDPipe)
-  //update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-   // return this.ordersService.update(+id, updateOrderDto);
- // }
-
-  @Delete(':id')
-  @HttpCode(200)
-  remove(@Param('id',ParseUUIDPipe) id: string) {
-   return "remove"
-  }
 }

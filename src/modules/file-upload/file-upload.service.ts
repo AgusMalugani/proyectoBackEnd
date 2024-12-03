@@ -7,7 +7,7 @@ import { ProductsService } from '../Products/products.service';
 export class FileUploadService {
 constructor(private readonly cloudinaryService: CloudinaryService){}
 
-    async uploadFile( file:FileUploadDTO, id :string ){
+    async uploadFile( file:FileUploadDTO ){
         const url = await this.cloudinaryService.uploadFile(file.buffer,file.originalName);
         return url;
         }

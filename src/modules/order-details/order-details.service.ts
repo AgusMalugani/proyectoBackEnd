@@ -19,8 +19,8 @@ if(products.length<1){
 throw new BadRequestException("No hay productos")
 }
 
-for (const productId of products) {
-precio = precio + await this.productsService.buyProductService(productId.id);
+for (const product of products) {
+precio = precio + await this.productsService.buyProductService(product.id);
 }
     
     const orderDet = this.orderDetailRepository.create({
@@ -37,15 +37,13 @@ precio = precio + await this.productsService.buyProductService(productId.id);
     });
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} orderDetail`;
+ async  findOne(id: string) {
+    const orderDet= await this.orderDetailRepository.findOne({where:{id}})
+    if(!orderDet){
+      throw new BadRequestException("No se encontro el detalle de orden con ese id")
+        }
+        return orderDet;
   }
 
-  update(id: number, updateOrderDetailDto: UpdateOrderDetailDto) {
-    return `This action updates a #${id} orderDetail`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} orderDetail`;
-  }
+ 
 }

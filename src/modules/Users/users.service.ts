@@ -31,9 +31,9 @@ export class UsersService{
    return responseUser
     }
 
-async updateUserService(id :number,user:UpdateUserDto){
-//const userMod = await this.usersRepository.update(id,user);
-//return userMod;
+async updateUserService(id:string,user:UpdateUserDto){
+const userMod = await this.usersRepository.update(id,user);
+return userMod;
 
 }
 

@@ -25,9 +25,9 @@ constructor(
   
 
   async addOrder(createOrder: CreateOrderDto) {
-    const{products} = createOrder;
+    const{products,idUser} = createOrder;
 
-    const user = await this.usersService.getOneUserService(createOrder.idUser)
+    const user = await this.usersService.getOneUserService(idUser)
     const fechaHoy = new Date()
 
 const orderCreate = this.orderRepository.create({
@@ -56,7 +56,8 @@ return orders;
   async getOrder(id:string){
     const order = await this.orderRepository.findOne({where:{id},
       relations:{
-      orderDetails:true
+      orderDetails:true,
+      user:true
     }})
   return order;
   }

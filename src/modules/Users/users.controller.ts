@@ -38,9 +38,9 @@ async createUser(@Body() user : CreateUserDTO){
 @Put("update/:id")
 @UseGuards(AuthGuard)
 @HttpCode(200)
-async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto,@Res() res : Response ){
-    const userMod= await this.usersService.updateUserService(Number(id),updateUserDto);
-  return userMod;
+async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
+    const userMod= await this.usersService.updateUserService(id,updateUserDto);
+  return {message: "Usuario modificado", data: userMod};
 }
 
 @Get(":id")
@@ -54,12 +54,10 @@ async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 @Delete("delete/:id")
 @UseGuards(AuthGuard)
 @HttpCode(200)
-async deleteUser(@Param("id",ParseUUIDPipe) id:string,@Res() res : Response ){
+async deleteUser(@Param("id",ParseUUIDPipe) id:string ){
     try{
         const users = await this.usersService.deleteUserService(id);
-        res.status(200).json({mesagge:"Usuario eliminado",
-            data: users
-        });
+        return {mesagge:"Usuario eliminado",data: users}
     } catch(e){
         throw new HttpException({status:400,error:e.message},400);
     }

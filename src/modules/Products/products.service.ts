@@ -64,7 +64,7 @@ export class ProductsService {
     }
 
     async uploadFile(file: FileUploadDTO, id:string){
-        const url = await this.fileUploadService.uploadFile(file,id)
+        const url = await this.fileUploadService.uploadFile(file)
       
       const productMod = await this.updateProductService(id,{imgUrl:url})
     

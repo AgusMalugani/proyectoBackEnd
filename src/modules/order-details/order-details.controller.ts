@@ -26,15 +26,5 @@ export class OrderDetailsController {
     return this.orderDetailsService.findOne(id);
   }
 
-  @Put(':id')
-  @HttpCode(200)
-  update(@Param('id',ParseUUIDPipe) id: string, @Body() updateOrderDetailDto: UpdateOrderDetailDto) {
-    return this.orderDetailsService.update(+id, updateOrderDetailDto);
-  }
-
-  @Delete(':id')
-  @HttpCode(200)
-  remove(@Param('id',ParseUUIDPipe) id: string) {
-    return this.orderDetailsService.remove(+id);
-  }
+ 
 }
