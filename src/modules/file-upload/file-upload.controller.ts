@@ -24,7 +24,7 @@ export class FileUploadController {
     mimeType:file.mimetype,
     originalName:file.originalname,
     size:file.size
-  },id);
+  });
 
 
   return {img:img,id:id};
