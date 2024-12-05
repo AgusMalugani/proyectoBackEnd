@@ -35,6 +35,7 @@ async createUser(@Body() user : CreateUserDTO){
 @Put("update/:id")
 @Roles(Role.User)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
     const userMod= await this.usersService.updateUserService(id,updateUserDto);
@@ -42,8 +43,6 @@ async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Bod
 }
 
 @Get(":id")
-@Roles(Role.User)
-@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
     const user= await this.usersService.getOneUserService(id);
@@ -53,6 +52,7 @@ async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 @Delete("delete/:id")
 @Roles(Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async deleteUser(@Param("id",ParseUUIDPipe) id:string ){
     try{

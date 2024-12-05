@@ -6,7 +6,7 @@ import { Product } from "./entities/product.entity";
 import { RolesGuard } from "src/guards/roles.guard";
 import { Roles } from "src/decorators/roles.decorators";
 import { Role } from "src/enum/role.enum";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ImagesUploadPipe } from "src/pipes/images-upload/images-upload.pipe";
 
@@ -18,6 +18,7 @@ constructor(private readonly productsService : ProductsService ){}
 @Get()
 @Roles(Role.User)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async getAllProducts(){
     const products = await this.productsService.getAllProductsService();
@@ -28,6 +29,7 @@ async getAllProducts(){
 @Post("create")
 @Roles(Role.User)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(201)
 async createProduct(@Body() product :Product){
   const producto = await this.productsService.createProductService(product);
@@ -38,6 +40,7 @@ return {message:"Producto creado",data:producto};
 @Put("update/:id")
 @Roles(Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async update(@Param('id', new ParseUUIDPipe({version:"4"})) id: string, @Body() updateProductDto: UpdateProductDto) {
     return await this.productsService.updateProductService(id, updateProductDto);
@@ -46,6 +49,7 @@ async update(@Param('id', new ParseUUIDPipe({version:"4"})) id: string, @Body() 
 @Get(":id")
 @Roles(Role.User)
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async getOneProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
  const producto = await this.productsService.getOneProductService(id);
@@ -56,6 +60,7 @@ async getOneProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 @Delete("delete/:id")
 @Roles(Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
+@ApiBearerAuth()
 @HttpCode(200)
 async deleteProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string){
     try{
