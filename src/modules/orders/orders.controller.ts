@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpException, HttpStatus, UseGuards, HttpCode } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { error } from 'console';
-import { AuthGuard } from 'src/guards/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Orders")
@@ -11,7 +9,6 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @HttpCode(201)
   async create(@Body() createOrder: CreateOrderDto) {
    
@@ -28,7 +25,6 @@ export class OrdersController {
   }
 
   @Get(":id")
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   async findOrder(@Param("id", new ParseUUIDPipe({version:"4"})) id:string){
     const orders = await this.ordersService.getOrder(id);

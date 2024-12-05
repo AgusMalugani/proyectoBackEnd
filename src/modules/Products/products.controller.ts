@@ -1,7 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductsService } from "./products.service";
-import { IProducts } from "src/mocks/products";
-import { Response } from "express";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { AuthGuard } from "src/guards/auth.guard";
 import { Product } from "./entities/product.entity"; 
@@ -18,7 +16,8 @@ export class ProductsController{
 constructor(private readonly productsService : ProductsService ){}
 
 @Get()
-@UseGuards(AuthGuard)
+@Roles(Role.User)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async getAllProducts(){
     const products = await this.productsService.getAllProductsService();
@@ -27,7 +26,8 @@ async getAllProducts(){
 
 
 @Post("create")
-@UseGuards(AuthGuard)
+@Roles(Role.User)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(201)
 async createProduct(@Body() product :Product){
   const producto = await this.productsService.createProductService(product);
@@ -36,6 +36,7 @@ return {message:"Producto creado",data:producto};
 
 
 @Put("update/:id")
+@Roles(Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async update(@Param('id', new ParseUUIDPipe({version:"4"})) id: string, @Body() updateProductDto: UpdateProductDto) {
@@ -43,7 +44,7 @@ async update(@Param('id', new ParseUUIDPipe({version:"4"})) id: string, @Body() 
   }
 
 @Get(":id")
-@Roles(Role.Admin)
+@Roles(Role.User)
 @UseGuards(AuthGuard)
 @HttpCode(200)
 async getOneProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
@@ -53,6 +54,8 @@ async getOneProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 }
 
 @Delete("delete/:id")
+@Roles(Role.Admin)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async deleteProduct(@Param("id", new ParseUUIDPipe({version:"4"})) id:string){
     try{

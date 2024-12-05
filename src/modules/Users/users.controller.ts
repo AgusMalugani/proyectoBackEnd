@@ -1,9 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, ParseUUIDPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { IUser } from "src/mocks/users";
 import { UpdateUserDto } from "./dto/update-user.dto"; 
-import { Response } from "express";
-import { User } from "./entities/user.entity"; 
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { AuthGuard } from "src/guards/auth.guard";
 import { RolesGuard } from "src/guards/roles.guard";
@@ -36,7 +33,8 @@ async createUser(@Body() user : CreateUserDTO){
     }
 
 @Put("update/:id")
-@UseGuards(AuthGuard)
+@Roles(Role.User)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
     const userMod= await this.usersService.updateUserService(id,updateUserDto);
@@ -44,7 +42,8 @@ async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Bod
 }
 
 @Get(":id")
-@UseGuards(AuthGuard)
+@Roles(Role.User)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
     const user= await this.usersService.getOneUserService(id);
@@ -52,7 +51,8 @@ async getOneUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string ){
 }
 
 @Delete("delete/:id")
-@UseGuards(AuthGuard)
+@Roles(Role.Admin)
+@UseGuards(AuthGuard,RolesGuard)
 @HttpCode(200)
 async deleteUser(@Param("id",ParseUUIDPipe) id:string ){
     try{

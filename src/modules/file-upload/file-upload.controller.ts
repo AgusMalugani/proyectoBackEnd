@@ -15,7 +15,6 @@ export class FileUploadController {
 
   @Post("uploadImage/:id")
   @UseInterceptors(FileInterceptor("file"))
-  @UseGuards(AuthGuard)
   @HttpCode(200)
  async uploadImage(@Param("id")id:string, @UploadedFile(new ImagesUploadPipe()) file : Express.Multer.File) {
  const img= await this.fileUploadService.uploadFile({
