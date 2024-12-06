@@ -36,4 +36,7 @@ stock: number
      */
 @IsString()
 imgUrl: string
+
+
+
 }

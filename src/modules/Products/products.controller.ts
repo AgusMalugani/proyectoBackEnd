@@ -9,6 +9,7 @@ import { Role } from "src/enum/role.enum";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ImagesUploadPipe } from "src/pipes/images-upload/images-upload.pipe";
+import { CreateProductDto } from "./dto/create-product.dto";
 
 @ApiTags("Products")
 @Controller("/products")
@@ -31,7 +32,7 @@ async getAllProducts(){
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(201)
-async createProduct(@Body() product :Product){
+async createProduct(@Body() product :CreateProductDto){
   const producto = await this.productsService.createProductService(product);
 return {message:"Producto creado",data:producto};
     }

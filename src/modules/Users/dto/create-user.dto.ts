@@ -47,7 +47,7 @@ export class CreateUserDTO{
     address:string;
 
 
-    /** 
+    /** Es un numero telefonico
      * @example 3413214567
      */
     @IsNumber()
@@ -55,7 +55,7 @@ export class CreateUserDTO{
     phone:string;
 
     /** Debe contener entre 5 y 20 caracteres
-     * @example Santa fe
+     * @example Argentina
      */
     @IsString()
     @IsOptional()
@@ -72,6 +72,14 @@ export class CreateUserDTO{
     @MinLength(5)
     @MaxLength(20)
     city?:string
+
+    /**
+     * Define si el usuario es administrador
+     * @example false
+     */
+    @IsOptional()
+    @IsNotEmpty()
+    isAdmin: boolean = false;
 
     constructor(partial : Partial<CreateUserDTO>){Object.assign(this,partial)}
 
