@@ -17,7 +17,7 @@ export class ProductsController{
 constructor(private readonly productsService : ProductsService ){}
 
 @Get()
-@Roles(Role.User)
+@Roles(Role.User,Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(200)
@@ -28,7 +28,7 @@ async getAllProducts(){
 
 
 @Post("create")
-@Roles(Role.User)
+@Roles(Role.User,Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(201)
@@ -48,7 +48,7 @@ async update(@Param('id', new ParseUUIDPipe({version:"4"})) id: string, @Body() 
   }
 
 @Get(":id")
-@Roles(Role.User)
+@Roles(Role.User,Role.Admin)
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 @HttpCode(200)

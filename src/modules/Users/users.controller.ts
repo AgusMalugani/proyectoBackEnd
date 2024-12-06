@@ -14,7 +14,7 @@ export class UsersController{
     constructor(private readonly usersService : UsersService){}
 
 @Get()
-@Roles(Role.User)
+@Roles(Role.User,Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(200)
@@ -33,11 +33,11 @@ async createUser(@Body() user : CreateUserDTO){
     }
 
 @Put("update/:id")
-@Roles(Role.User)
+@Roles(Role.User,Role.Admin)
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(200)
-async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
+async updateUser(@Param("id,", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
     const userMod= await this.usersService.updateUserService(id,updateUserDto);
   return {message: "Usuario modificado", data: userMod};
 }
