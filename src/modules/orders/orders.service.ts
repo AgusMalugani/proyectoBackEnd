@@ -44,11 +44,7 @@ return this.orderRepository.save(order);
   }
 
   async findAll() {
-    const orders = await this.orderRepository.find({
-      relations:{
-      orderDetails:true,
-      user:true
-    }});
+    const orders = await this.orderRepository.find();
 return orders;
   }
 

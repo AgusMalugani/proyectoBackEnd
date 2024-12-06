@@ -32,13 +32,11 @@ precio = precio + await this.productsService.buyProductService(product.id);
      }
 
   async findAll() {
-    return this.orderDetailRepository.find({
-      relations :{ products : true , order:true}
-    });
+    return this.orderDetailRepository.find();
   }
 
  async  findOne(id: string) {
-    const orderDet= await this.orderDetailRepository.findOne({where:{id}})
+    const orderDet= await this.orderDetailRepository.findOne({where:{id},relations:{order:true,products:true}})
     if(!orderDet){
       throw new BadRequestException("No se encontro el detalle de orden con ese id")
         }
