@@ -25,11 +25,13 @@ export class CreateUserDTO{
     /** Debe contener una mayuscula, un numero y caracter especial
      * @example Ejemplo91.
      */
-    //@IsStrongPassword()
+    @IsStrongPassword()
     @MaxLength(20)
     @IsNotEmpty()
     password:string;
-      
+      /** Debe contener una mayuscula, un numero y caracter especial, debe ser igual que password
+     * @example Ejemplo91.
+     */
     @IsString()
     @MaxLength(20)
     @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { IUser, usersArray } from "src/mocks/users";
 import { UpdateUserDto } from "./dto/update-user.dto"; 
 import { User } from "./entities/user.entity"; 
@@ -39,7 +39,11 @@ return userMod;
 
 
 async getOneUserService(id:string){
-    return await this.usersRepository.findOne({where: {id},relations:{orders:true}});
+    const user = await this.usersRepository.findOne({where: {id},relations:{orders:true}});
+    if(!user){
+         throw new BadRequestException("No existe usuario con la id ingresada");
+    }
+    return user
  
 }
 
