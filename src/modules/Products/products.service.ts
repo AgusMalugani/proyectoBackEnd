@@ -28,13 +28,18 @@ export class ProductsService {
 
     async createProductService(product: CreateProductDto) {
         const categoria = await this.categoriesService.findCategoryByName(product.category?.name)
+        console.log(categoria);
+        
         if(!categoria){
            const newCategory= await this.categoriesService.addCategory(product.category); 
+           console.log(newCategory);
+           
          const producto =  this.productsRepository.create({...product,category:newCategory});
          return  this.productsRepository.save(producto);
         }
         else{
-            const producto =  this.productsRepository.create(product);
+            
+            const producto =  this.productsRepository.create({...product,category:categoria});
          return  this.productsRepository.save(producto);
         }
 

@@ -20,7 +20,15 @@ return this.categoriesRepository.save(categoria);
  }
 
 async findCategoryByName(name: string){
-return await this.categoriesRepository.findOne({where:{name}});
+  console.log(name);
+  const categoria = await this.categoriesRepository.findOne({where:{name:name}});
+return categoria
 }
+
+async deleteCategory(id: string){
+  return await this.categoriesRepository.delete(id);
+}
+
+
 
 }

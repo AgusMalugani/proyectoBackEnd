@@ -21,4 +21,17 @@ export class CategoriesController {
     return {data: categories}
   }
 
+  @Delete("delete/:id")
+  async deleteCategory(@Param() id:string){
+    return await this.categoriesService.deleteCategory(id);
+  }
+
+  @Get(":name")
+  async getOneCategoryByName(@Param("name") name:string){
+    const categoria = await this.categoriesService.findCategoryByName(name);
+    console.log(categoria);
+    
+    return {data: categoria}
+  }
+
 }

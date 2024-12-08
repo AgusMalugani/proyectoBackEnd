@@ -52,7 +52,7 @@ stock: number
 @IsString()
 imgUrl: string
 
-@ManyToOne(()=>Category,(cat)=>cat.products)
+@ManyToOne(()=>Category,(cat)=>cat.products,{cascade:true,eager:false})
 category:Category
 @ManyToMany(()=>OrderDetail,(orderDet)=>orderDet.products)
 orderDetails:OrderDetail[];

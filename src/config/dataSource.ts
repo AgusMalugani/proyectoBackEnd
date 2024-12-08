@@ -14,11 +14,10 @@ const dataSource={
     autoLoadEntities:true,
     entities:["dist/**/*.entity{.ts,.js}"],
     migrations:["dist/migrations/*{.js,.ts}"],
-    //dropSchema:true,
+    dropSchema:true,
     logging:true
     }
 
-    console.log(dataSource);
     
 export default registerAs("dataSource",()=>dataSource); 
 

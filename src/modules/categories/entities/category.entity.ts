@@ -15,7 +15,7 @@ export class Category {
     @Column()
     name:string;
     
-    @OneToMany(()=>Product,(prod)=>prod.category)
+    @OneToMany(()=>Product,(prod)=>prod.category,{eager:true})
     products:Product[];
 
 }
