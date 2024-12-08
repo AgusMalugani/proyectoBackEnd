@@ -10,14 +10,14 @@ export class CategoriesController {
 
   @Post()
   @HttpCode(201)
-  addCategory(category : CreateCategoryDto){
+  addCategory(@Body()category : CreateCategoryDto){
     return this.categoriesService.addCategory(category);
   }
 
   @Get()
   @HttpCode(200)
   async getAllCategory(){
-    const categories  = this.categoriesService.getAllCategory();
+    const categories  = await this.categoriesService.getAllCategory();
     return {data: categories}
   }
 
