@@ -32,7 +32,12 @@ export class UsersService{
     }
 
 async updateUserService(id:string,user:UpdateUserDto){
+    const verificarUsuario = await this.usersRepository.findOne({where:{id}})
+    if(!verificarUsuario){
+        throw new BadRequestException("No existe un usuario con la id ingresada");
+        }
 const userMod = await this.usersRepository.update(id,user);
+
 return userMod;
 
 }

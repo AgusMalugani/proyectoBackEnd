@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
-import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 import { OrderDetail } from './entities/order-detail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -31,12 +30,16 @@ precio = precio + await this.productsService.buyProductService(product.id);
   return this.orderDetailRepository.save(orderDet);
      }
 
+
+
   async findAll() {
     return this.orderDetailRepository.find();
   }
 
+
+
  async  findOne(id: string) {
-    const orderDet= await this.orderDetailRepository.findOne({where:{id},relations:{order:true,products:true}})
+    const orderDet= await this.orderDetailRepository.findOne({where:{id},relations:{products:true,order:true}})
     if(!orderDet){
       throw new BadRequestException("No se encontro el detalle de orden con ese id")
         }

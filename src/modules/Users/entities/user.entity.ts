@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import {v4 as uuid} from "uuid"
 import { Order } from "src/modules/orders/entities/order.entity";
 import { Role } from "src/enum/role.enum";
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsStrongPassword, MaxLength } from "class-validator";
 @Entity()
 export class User{
     /**
@@ -38,6 +38,7 @@ export class User{
     @IsString()
     @MaxLength(20)
     @IsNotEmpty()
+    @IsStrongPassword()
     password: string
 
     /** Debe contener entre 3 y 80 caracteres

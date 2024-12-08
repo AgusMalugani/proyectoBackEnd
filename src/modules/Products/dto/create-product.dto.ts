@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator"
+import { Category } from "src/modules/categories/entities/category.entity"
 
 export class CreateProductDto {
     
@@ -35,7 +36,11 @@ stock: number
      * @example http://ejemplo.com/imagenProducto
      */
 @IsString()
+@IsOptional()
 imgUrl: string
+
+@IsOptional()
+category : Category
 
 
 

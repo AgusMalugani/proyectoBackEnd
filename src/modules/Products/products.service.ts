@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { ProductsRepository } from "./products.repository";
 import { IProducts, productsArray } from "src/mocks/products";
 import { UpdateProductDto } from "./dto/update-product.dto"; 
@@ -8,26 +8,39 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FileUploadService } from "../file-upload/file-upload.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { FileUploadDTO } from "../file-upload/dto/file-upload.dto";
+import { CategoriesService } from './../categories/categories.service';
 
 
 @Injectable()
 export class ProductsService {
     
     constructor(@InjectRepository(Product) private productsRepository: Repository<Product>,
-    private readonly fileUploadService : FileUploadService) { }
+    private readonly fileUploadService : FileUploadService,
+    private categoriesService: CategoriesService) { }
 
     async getAllProductsService() {
-        const products = await this.productsRepository.find({relations:{category:true,orderDetails:true}});
-        if (products) {
-            return products;
+        const products = await this.productsRepository.find({relations:{category:true}});
+        if (!products) {
+            throw new BadRequestException("No hay Productos");
         }
+        return products;
     }
 
     async createProductService(product: CreateProductDto) {
+        const categoria = await this.categoriesService.findCategoryByName(product.category?.name)
+        if(!categoria){
+           const newCategory= await this.categoriesService.addCategory(product.category); 
+         const producto =  this.productsRepository.create({...product,category:newCategory});
+         return  this.productsRepository.save(producto);
+        }
+        else{
+            const producto =  this.productsRepository.create(product);
+         return  this.productsRepository.save(producto);
+        }
 
-        const producto =  this.productsRepository.create(product);
+
         
-        return await this.productsRepository.save(producto);;
+        
     }
 
     async updateProductService(id: string, updateProductDto: UpdateProductDto) {
@@ -45,8 +58,12 @@ export class ProductsService {
 
     async getOneProductService(id: string) {
         const prod = await this.productsRepository.findOne({where:{id}})
+        if(!prod){
+            throw new BadRequestException("No hay productos con la id ingresada");
+        }
         return prod;
     }
+
     async deleteProductService(id: string) {
         const products = await this.productsRepository.delete(id);
         return products;
@@ -55,6 +72,7 @@ export class ProductsService {
     async buyProductService(id: string) {
         let precio = 0 ;
         const product = await this.getOneProductService(id);
+
         if(product.stock > 0){
           precio = product.price;
           product.stock = product.stock-1

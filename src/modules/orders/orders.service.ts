@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +44,10 @@ return this.orderRepository.save(order);
   }
 
   async findAll() {
-    const orders = await this.orderRepository.find();
+    const orders = await this.orderRepository.find({relations:{user:true}});
+    if(!orders){
+      throw new BadRequestException("No hay ordenes cargadas");
+    }
 return orders;
   }
 
@@ -55,6 +58,9 @@ return orders;
       orderDetails:true,
       user:true
     }})
+    if(!order){
+      throw new BadRequestException("No hay ordenes con el id ingresado");
+    }
   return order;
   }
 

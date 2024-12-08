@@ -16,6 +16,11 @@ return this.categoriesRepository.save(categoria);
  }
 
  async getAllCategory(){
-  return this.categoriesRepository.find();
+  return await this.categoriesRepository.find();
  }
+
+async findCategoryByName(name: string){
+return await this.categoriesRepository.findOne({where:{name}});
+}
+
 }

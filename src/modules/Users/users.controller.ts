@@ -37,9 +37,9 @@ async createUser(@Body() user : CreateUserDTO){
 @UseGuards(AuthGuard,RolesGuard)
 @ApiBearerAuth()
 @HttpCode(200)
-async updateUser(@Param("id,", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
+async updateUser(@Param("id", new ParseUUIDPipe({version:"4"})) id:string,  @Body() updateUserDto: UpdateUserDto){
     console.log(id);
-    
+    console.log(updateUserDto);    
     const userMod= await this.usersService.updateUserService(id,updateUserDto);
   return {message: "Usuario modificado", data: userMod};
 }
