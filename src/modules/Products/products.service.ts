@@ -1,6 +1,4 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { ProductsRepository } from "./products.repository";
-import { IProducts, productsArray } from "src/mocks/products";
 import { UpdateProductDto } from "./dto/update-product.dto"; 
 import { Repository } from "typeorm";
 import { Product } from "./entities/product.entity"; 
@@ -28,7 +26,6 @@ export class ProductsService {
 
     async createProductService(product: CreateProductDto) {
         const categoria = await this.categoriesService.findCategoryByName(product.category?.name)
-        console.log(categoria);
         
         if(!categoria){
            const newCategory= await this.categoriesService.addCategory(product.category); 
@@ -70,7 +67,13 @@ export class ProductsService {
     }
 
     async deleteProductService(id: string) {
+        const producto = await this.getOneProductService(id);
+        const idCategory = producto.category?.id;
+        console.log(idCategory);
         const products = await this.productsRepository.delete(id);
+        await this.deleteProductAndCategory(idCategory); 
+        
+        
         return products;
     }
 
@@ -93,6 +96,15 @@ export class ProductsService {
     
       return productMod;
     
+      }
+
+      async deleteProductAndCategory(idCategory : string){
+        const categoria = await this.categoriesService.findCategoryById(idCategory)
+        if(categoria.products.length < 1){
+            await this.categoriesService.deleteCategory(categoria.id)
+           
+        }
+        
       }
 
 }

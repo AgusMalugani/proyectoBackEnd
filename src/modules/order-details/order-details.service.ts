@@ -46,5 +46,9 @@ precio = precio + await this.productsService.buyProductService(product.id);
         return orderDet;
   }
 
- 
+ async delete(id:string){
+  return this.orderDetailRepository.delete(id);
+ }
+
+
 }

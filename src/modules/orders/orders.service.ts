@@ -64,4 +64,15 @@ return orders;
   return order;
   }
 
+async deleteOrder(id:string){
+const order = await this.getOrder(id);
+ await this.orderRepository.delete(id);
+await this.deleteOrderAndOrderDetail(order.orderDetails?.id)
+return "la Orden y su detalle fueron eliminados"
+}
+
+async deleteOrderAndOrderDetail(idOrderDetail : string){
+ await this.orderDetailService.delete(idOrderDetail);
+}
+
 }

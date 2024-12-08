@@ -30,6 +30,11 @@ export class OrdersController {
     const orders = await this.ordersService.getOrder(id);
     return orders
   }
+
+  @Delete("delete/:id")
+  async deleteOrder(@Param("id") id:string){
+ return await this.ordersService.deleteOrder(id);
+  }
   
 
 }
