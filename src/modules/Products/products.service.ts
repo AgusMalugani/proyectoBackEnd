@@ -28,9 +28,7 @@ export class ProductsService {
         const categoria = await this.categoriesService.findCategoryByName(product.category?.name)
         
         if(!categoria){
-           const newCategory= await this.categoriesService.addCategory(product.category); 
-           console.log(newCategory);
-           
+           const newCategory= await this.categoriesService.addCategory(product.category);  
          const producto =  this.productsRepository.create({...product,category:newCategory});
          return  this.productsRepository.save(producto);
         }
@@ -69,7 +67,6 @@ export class ProductsService {
     async deleteProductService(id: string) {
         const producto = await this.getOneProductService(id);
         const idCategory = producto.category?.id;
-        console.log(idCategory);
         const products = await this.productsRepository.delete(id);
         await this.deleteProductAndCategory(idCategory); 
         
